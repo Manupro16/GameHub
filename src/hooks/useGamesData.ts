@@ -12,6 +12,11 @@ export interface Platform {
     // Include other relevant fields if needed
 }
 
+export interface Genres {
+    id: number;
+    name: string;
+}
+
 interface Game {
     id: number;
     slug: string;
@@ -20,7 +25,8 @@ interface Game {
     background_image: string;
     metacritic: number;
     platforms: Platform[];
-    // Add other fields from the API response as needed
+    genres: Genres[];
+
 }
 
 interface GamesApiResponse {

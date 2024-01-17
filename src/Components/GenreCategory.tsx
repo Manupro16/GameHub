@@ -3,26 +3,30 @@ import {Flex, Image, Link, ListItem} from "@chakra-ui/react";
 interface Props {
     img_url: string;
     type: string;
+    onGenreClick: () => void;
 }
 
-function GenreCategory( props: Props ) {
+
+
+
+function GenreCategory( {img_url, type, onGenreClick }: Props ) {
 
 
     return (
-        <ListItem>
+        <ListItem onClick={onGenreClick}>
             <Flex alignItems='center' gap={[1, 2, 3]}>
                 <Image
-                    src={props.img_url}
+                    src={img_url}
                     boxSize={['40px', '50px', '60px']}
                     objectFit='cover'
                     borderRadius='10px'
-                    alt={`${props.type} Genre`}
+                    alt={`${type} Genre`}
                 />
                 <Link
                     fontSize={['sm', 'md', 'lg']}
                     _hover={{ textDecoration: 'underline' }}
                 >
-                    {props.type}
+                    {type}
                 </Link>
             </Flex>
         </ListItem>

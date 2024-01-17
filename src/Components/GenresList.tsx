@@ -2,7 +2,11 @@ import {Text, List, Box} from '@chakra-ui/react';
 import GenreCategory from "./GenreCategory.tsx";
 import useGenresData from "../hooks/useGenresData";
 
-function GenresList() {
+interface GenresListProps {
+    onGenreSelect: (genre: string) => void;
+}
+
+function GenresList({ onGenreSelect }: GenresListProps) {
 
     // @ts-ignore
     const { data, error, loading } = useGenresData();
@@ -13,7 +17,7 @@ function GenresList() {
             <Text fontSize={['2xl', '3xl', '4xl']} as='b' mb={4}>Genres</Text>
             <List marginTop='4' spacing={3}>
                 {data && data.results.map((genre) => (
-                    <GenreCategory key={genre.id} img_url={genre.image_background} type={genre.name} />
+                    <GenreCategory key={genre.id} img_url={genre.image_background} type={genre.name} onGenreClick={() => onGenreSelect(genre.name)} />
                 ))}
             </List>
         </Box>
