@@ -1,14 +1,13 @@
 import ApiService from '../services/api-service';
 
 
-interface PlatformDetail {
+export interface PlatformDetail {
     id: number;
     name: string;
-    slug: string;
     // Include other relevant fields if needed
 }
 
-interface Platform {
+export interface Platform {
     platform: PlatformDetail;
     // Include other relevant fields if needed
 }

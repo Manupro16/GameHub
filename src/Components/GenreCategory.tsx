@@ -1,30 +1,28 @@
 import {Flex, Image, Link, ListItem} from "@chakra-ui/react";
 
-function GenreCategory() {
+interface Props {
+    img_url: string;
+    type: string;
+}
 
-
-    const handleGenreClick = (genre: string) => {
-        // Handle the click event for the genre
-        console.log("Genre clicked:", genre);
-    };
+function GenreCategory( props: Props ) {
 
 
     return (
         <ListItem>
             <Flex alignItems='center' gap={[1, 2, 3]}>
                 <Image
-                    src='https://media.rawg.io/media/games/26d/26d4437715bee60138dab4a7c8c59c92.jpg'
+                    src={props.img_url}
                     boxSize={['40px', '50px', '60px']}
                     objectFit='cover'
                     borderRadius='10px'
-                    alt='Action Genre'
+                    alt={`${props.type} Genre`}
                 />
                 <Link
                     fontSize={['sm', 'md', 'lg']}
                     _hover={{ textDecoration: 'underline' }}
-                    onClick={() => handleGenreClick('Action')}
                 >
-                    Action
+                    {props.type}
                 </Link>
             </Flex>
         </ListItem>
