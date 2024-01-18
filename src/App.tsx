@@ -1,15 +1,27 @@
-import {Grid, useBreakpointValue} from '@chakra-ui/react';
+import {Box, Grid, useBreakpointValue} from '@chakra-ui/react';
 import NavBar from "./Components/NavBar.tsx";
 import GenresList from "./Components/GenresList.tsx";
 import GamesList from "./Components/GamesList.tsx";
 import  { useState } from 'react';
+import Dropdowns from "./Components/Dropdowns.tsx";
+
 
 function App() {
 
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+    const [selectedPlatform, setSelectedPlatform] = useState<string>('');
+    const [sortOption, setSortOption] = useState<string>('');
 
     function handleGenreSelect(genre: string ) {
         setSelectedGenre(genre);
+    }
+
+    function handlePlatformSelect(platform: string) {
+        setSelectedPlatform(platform);
+    }
+
+    function handleSortSelect(sortOption: string) {
+        setSortOption(sortOption);
     }
 
     const templateColumns = useBreakpointValue({
@@ -17,12 +29,33 @@ function App() {
         md: "0.3fr 1.5fr", // Allocates more space to the games section on wider screens
     });
 
+    const gridTemplateAreas = useBreakpointValue({
+        base: `
+            "dropdowns"
+            "genres"
+            "games"`,
+        md: `"genres dropdowns" "genres games"`
+    });
+
+    const gridTemplateRows = useBreakpointValue({
+        base: "auto auto 1fr",
+        md: "auto 1fr"
+    });
+
   return (
       <>
         <NavBar />
-        <Grid templateRows='auto' templateColumns={templateColumns} gap={6} padding={6}>
-            <GenresList onGenreSelect={handleGenreSelect} />
-            <GamesList selectedGenre={selectedGenre} />
+        <Grid gridTemplateAreas={gridTemplateAreas} templateRows={gridTemplateRows} templateColumns={templateColumns} gap={6} padding={6}>
+            <Box gridArea='dropdowns'>
+                <Dropdowns onPlatformSelect={handlePlatformSelect} onSortSelect={handleSortSelect} />
+            </Box>
+            <Box gridArea='genres'>
+                <GenresList onGenreSelect={handleGenreSelect} />
+            </Box>
+            <Box gridArea='games'>
+                <GamesList selectedGenre={selectedGenre} selectedPlatform={selectedPlatform} sortOption={sortOption} />
+            </Box>
+
         </Grid>
       </>
   );

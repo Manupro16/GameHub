@@ -16,6 +16,7 @@ function ApiService<T>(endpoint: string) {
                 const response = await ApiClient.get<T>(endpoint,
                     { cancelToken: cancelTokenSource.token });
                 setData(response.data);
+                setError(null);
             } catch (error) {
                 setError(error);
             } finally {
