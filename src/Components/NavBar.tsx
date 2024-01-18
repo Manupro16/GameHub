@@ -9,11 +9,24 @@ import {
     useBreakpointValue
 } from '@chakra-ui/react';
 import { SearchIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import React, { useState } from "react";
 
-function NavBar() {
+interface NavBarProps {
+    onSearch: (query: string) => void;
+}
+
+
+function NavBar({ onSearch }: NavBarProps) {
     const { colorMode, toggleColorMode } = useColorMode();
     const templateColumns = useBreakpointValue({ base: "1fr", md: "auto 1fr auto" });
+    const [searchQuery, setSearchQuery] = useState("");
 
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("clicked" + event.target.value);
+        setSearchQuery(event.target.value);
+        onSearch(event.target.value); // Call the callback passed from App
+    };
 
     return (
         <Grid templateColumns={templateColumns} gap={4} alignItems="center" padding={4}>
@@ -25,7 +38,7 @@ function NavBar() {
                 <InputLeftElement pointerEvents="none">
                     <SearchIcon color="gray.300" />
                 </InputLeftElement>
-                <Input placeholder="Search games" />
+                <Input placeholder="Search games" value={searchQuery} onChange={handleSearchChange} />
             </InputGroup>
 
             {/* Toggle Button */}

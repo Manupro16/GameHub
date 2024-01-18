@@ -9,32 +9,27 @@ interface GamesListProps {
     selectedGenre: string | null;
     selectedPlatform: string;
     sortOption: string;
+    searchQuery: string;
 }
 
 
-function GamesList({ selectedGenre, selectedPlatform, sortOption }: GamesListProps) {
-
-
+function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }: GamesListProps) {
   const paddingValue = useBreakpointValue({ base: 4, sm: 6, md: 8 });
-
   const { data, error, loading } = useGamesData();
-    const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+  const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
-    function matchesSelectedGenre(game: Game) {
-        return !selectedGenre || game.genres.some(genre => genre.name === selectedGenre);
-    }
+    function matchesFilters(game: Game) {
+        const matchesGenre = !selectedGenre || game.genres.some(genre => genre.name === selectedGenre);
+        const matchesPlatform = !selectedPlatform || game.platforms.some(platform => platform.platform.name.includes(selectedPlatform));
+        const matchesSearch = !searchQuery || game.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-    function matchesSelectedPlatform(game: Game) {
-        return !selectedPlatform || game.platforms.some(platform => platform.platform.name.includes(selectedPlatform));
+        return matchesGenre && matchesPlatform && matchesSearch;
     }
 
     useEffect(() => {
         if (data?.results) {
-            let newFilteredGames = data.results.filter(game =>
-                matchesSelectedGenre(game) && matchesSelectedPlatform(game)
-            );
+            let newFilteredGames = data.results.filter(matchesFilters);
 
-            // Refactor sorting logic using switch statement
             switch (sortOption) {
                 case 'Newest':
                     newFilteredGames.sort((a, b) => new Date(b.released ?? '').getTime() - new Date(a.released ?? '').getTime());
@@ -52,7 +47,7 @@ function GamesList({ selectedGenre, selectedPlatform, sortOption }: GamesListPro
 
             setFilteredGames(newFilteredGames);
         }
-    }, [data, selectedGenre, selectedPlatform, sortOption]);
+    }, [data, selectedGenre, selectedPlatform, sortOption, searchQuery]);
 
     return (
         <Box as="section" paddingLeft={paddingValue}>

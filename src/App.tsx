@@ -11,6 +11,7 @@ function App() {
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
     const [selectedPlatform, setSelectedPlatform] = useState<string>('');
     const [sortOption, setSortOption] = useState<string>('');
+    const [searchQuery, setSearchQuery] = useState("");
 
     function handleGenreSelect(genre: string ) {
         setSelectedGenre(genre);
@@ -44,7 +45,7 @@ function App() {
 
   return (
       <>
-        <NavBar />
+        <NavBar onSearch={setSearchQuery} />
         <Grid gridTemplateAreas={gridTemplateAreas} templateRows={gridTemplateRows} templateColumns={templateColumns} gap={6} padding={6}>
             <Box gridArea='dropdowns'>
                 <Dropdowns onPlatformSelect={handlePlatformSelect} onSortSelect={handleSortSelect} />
@@ -53,7 +54,7 @@ function App() {
                 <GenresList onGenreSelect={handleGenreSelect} />
             </Box>
             <Box gridArea='games'>
-                <GamesList selectedGenre={selectedGenre} selectedPlatform={selectedPlatform} sortOption={sortOption} />
+                <GamesList selectedGenre={selectedGenre} selectedPlatform={selectedPlatform} sortOption={sortOption}  searchQuery={searchQuery} />
             </Box>
 
         </Grid>
