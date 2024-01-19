@@ -1,10 +1,40 @@
+/**
+ * App.js
+ *
+ * The main component of the application. It serves as the root of the component
+ * hierarchy and manages the global state and layout of the application.
+ *
+ * State:
+ * - selectedGenre: Stores the currently selected genre from the genre list.
+ * - selectedPlatform: Stores the currently selected platform from the dropdown.
+ * - sortOption: Stores the selected sorting option for the games list.
+ * - searchQuery: Stores the current search query from the search bar.
+ *
+ * Functions:
+ * - handleGenreSelect: Updates the `selectedGenre` state based on user selection.
+ * - handlePlatformSelect: Updates the `selectedPlatform` state based on user selection.
+ * - handleSortSelect: Updates the `sortOption` state based on user selection.
+ * - setSearchQuery: Updates the `searchQuery` state with the search input.
+ *
+ * Layout:
+ * - Utilizes Chakra UI's Grid component to create a responsive layout.
+ * - Divided into three main areas: dropdowns, genres, and games.
+ * - Adapts the layout based on screen size using `useBreakpointValue`.
+ *
+ * Children Components:
+ * - NavBar: Component that contains the navigation and search functionality.
+ * - GenresList: Component that displays a list of game genres.
+ * - GamesList: Component that displays a list of games based on selected filters and search query.
+ * - Dropdowns: Component that contains dropdown menus for platform selection and sorting options.
+ */
+
+
 import {Box, Grid, useBreakpointValue} from '@chakra-ui/react';
 import NavBar from "./Components/NavBar.tsx";
 import GenresList from "./Components/GenresList.tsx";
 import GamesList from "./Components/GamesList.tsx";
 import  { useState } from 'react';
 import Dropdowns from "./Components/Dropdowns.tsx";
-
 
 function App() {
 
@@ -66,14 +96,3 @@ export default App;
 
 
 
-// Good afternoon ready to finish this project?
-//
-//     Today, we will work on 4 things.
-//
-// 1 when a genre gets clicked, it will display the genre that got clicked. For example, if the user clicks on the action, it will filter all games and display only the games that are action, and so on
-//
-// 2 add functionality to the search bar. If a user searches for a game, it will display that game. If no games are found, it will display a message
-//
-// 3 add functionality to the dropdown menus. If a user clicks on Date it will display the game with the newest Date to the oldest Date, and the same thing goes for the platform dropdown menu
-//
-// 4 add a loading animation to the skeleton of the card when loading. For example, if a user clicks on a query action like selecting only actions games, it will display a loading animation on the skeleton of the card, and once the process is done, it will display data

@@ -1,3 +1,24 @@
+/**
+ * GamesList Component
+ *
+ * This component is responsible for displaying a list of games based on various filters such as genre, platform, sorting option, and search query.
+ * It fetches game data using the `useGamesData` hook and applies filters to display relevant games.
+ *
+ * Props:
+ *  - selectedGenre: string | null - The genre selected by the user. Null if no genre is selected.
+ *  - selectedPlatform: string - The platform selected by the user.
+ *  - sortOption: string - The sorting option chosen by the user (e.g., 'Newest', 'Oldest').
+ *  - searchQuery: string - The search query entered by the user.
+ *
+ * The component uses Chakra UI for layout and styling. It also uses a custom `SkeletonGameCard` component to display a loading state.
+ *
+ * The component's main logic involves filtering and sorting the games data based on the props provided. This is done inside a useEffect hook,
+ * which re-runs whenever the props change, ensuring that the displayed games are always up to date with the user's selections.
+ *
+ * In case of an error during data fetching, an error message is displayed. If no games match the filters, a message indicating so is shown.
+ */
+
+
 import {Text, Box, Flex, useBreakpointValue} from '@chakra-ui/react';
 import GamesCard from "./GameCard.tsx";
 import useGamesData, { Game } from "../hooks/useGamesData";
@@ -14,9 +35,9 @@ interface GamesListProps {
 
 
 function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }: GamesListProps) {
-  const paddingValue = useBreakpointValue({ base: 4, sm: 6, md: 8 });
-  const { data, error, loading } = useGamesData();
-  const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+    const paddingValue = useBreakpointValue({ base: 4, sm: 6, md: 8 });
+    const { data, error, loading } = useGamesData();
+    const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
     function matchesFilters(game: Game) {
         const matchesGenre = !selectedGenre || game.genres.some(genre => genre.name === selectedGenre);

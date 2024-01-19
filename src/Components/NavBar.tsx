@@ -1,3 +1,27 @@
+/**
+ * NavBar Component
+ *
+ * Purpose:
+ * Renders the navigation bar for the application. It includes a logo, a search bar, and a toggle button for dark mode.
+ *
+ * Props:
+ * - `onSearch`: Function that handles the search query input. It is triggered on search input change.
+ *
+ * Usage:
+ * This component is used at the top of the main application layout. It allows users to search for games and toggle the color mode of the application.
+ *
+ * Search Functionality:
+ * The search bar updates the state on each input change and calls the `onSearch` function, allowing the parent component to handle the search logic.
+ *
+ * Color Mode Toggle:
+ * Includes a button to toggle between light and dark modes of the application, enhancing the user experience and accessibility.
+ *
+ * Responsiveness:
+ * The component uses `useBreakpointValue` from Chakra UI for responsive layout design, ensuring it adapts well to various screen sizes.
+ *
+ * Accessibility:
+ * Semantic HTML is used along with proper ARIA labels for accessibility. The search bar and toggle button are keyboard accessible.
+ */
 import {
     Grid,
     Image,
