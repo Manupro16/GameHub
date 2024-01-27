@@ -36,7 +36,7 @@ interface GamesListProps {
 
 function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }: GamesListProps) {
     const paddingValue = useBreakpointValue({ base: 4, sm: 6, md: 8 });
-    const { data, error, loading } = useGamesData();
+    const { data, error, isLoading } = useGamesData();
     const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
     function matchesFilters(game: Game) {
@@ -76,11 +76,11 @@ function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }:
                 Games
             </Text>
             <Flex wrap="wrap" justify="space-around" gap={6}>
-                {loading ? (
+                {isLoading ? (
                     Array(10).fill(null).map((_, index) => <SkeletonGameCard key={index} />)
                 ) : error ? (
                     <Text fontSize="lg" color="gray.500" marginTop={10}>
-                        Error on request: {error.message}
+                        Error on request: {error?.message}
                     </Text>
                 ) : filteredGames && filteredGames.length > 0 ? (
                     filteredGames.map((game) => (

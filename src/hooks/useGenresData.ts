@@ -2,41 +2,48 @@
  * useGenresData Hook
  *
  * Purpose:
- * Fetches and provides genre data from the RAWG Video Games Database API.
- * This hook is designed to retrieve a list of game genres, each with associated games.
+ * Fetches and provides genre data from the RAWG Video Games Database API using React Query for data fetching and caching.
+ * This hook retrieves a list of game genres, including details like the number of games available in each genre and background images.
  *
  * Usage:
- * This hook is mainly used in the GenresList component to render a list of game genres,
- * along with a count of games available in each genre and a background image representing the genre.
+ * Mainly utilized within components that require a list of game genres, such as a genre filter or navigation menu.
+ * It facilitates the display of genres with their metadata and provides a foundation for building interactive UI elements based on genre data.
  *
  * Data Model:
- * The hook uses the Genre interface, which includes details like id, name, games count,
- * image background, and a list of games associated with each genre.
+ * Leverages the GenreApiResponse interface to type the expected response from the API. This interface includes:
+ * - count: Total number of genres.
+ * - next: URL for the next page of results (if applicable).
+ * - previous: URL for the previous page of results (if applicable).
+ * - results: Array of Genre objects, each containing id, name, games_count, image_background, and an array of associated games.
  *
  * API Response Structure:
- * - count: Total number of genres available.
+ * - count: Total number of genres.
  * - next: URL for the next page of results.
  * - previous: URL for the previous page of results.
- * - results: Array of genre objects.
+ * - results: Array of genres, each with associated details and games.
  *
  * Return Value:
- * This hook returns an object containing the genre data (or null if not loaded),
- * a loading state, and an error state (if any error occurs during the API call).
+ * Utilizes React Query's useQuery hook to return a query object containing:
+ * - data: The fetched genre data or undefined if not yet loaded.
+ * - error: An error object if an error occurred during the fetch.
+ * - isLoading: A boolean indicating if the request is in progress.
+ * - isError: A boolean indicating if the request resulted in an error.
  *
  * Error Handling:
- * Any errors encountered during the API call are caught and returned as part of the hook's return value.
+ * Errors during the fetch process are managed by React Query and accessible through the error and isError return values.
  *
  * Dependencies:
- * Relies on the ApiService custom hook for performing API requests.
+ * Uses the ApiClient class for making API requests, leveraging React Query for caching, state management, and error handling.
  *
  * Example:
- * const { data, loading, error } = useGenresData();
- * if (loading) return <LoadingIndicator />;
- * if (error) return <ErrorDisplay message={error} />;
- * return <GenresList genres={data.results} />;
+ * const { data, isLoading, error } = useGenresData();
+ * if (isLoading) return <LoadingIndicator />;
+ * if (error) return <ErrorDisplay message={error.message} />;
+ * return <GenresList genres={data?.results} />;
  */
 
-import ApiService from '../services/api-service';
+import ApiClient from '../services/api-client';
+import { useQuery } from '@tanstack/react-query';
 
 interface Game {
     id: number;
@@ -60,7 +67,18 @@ interface GenreApiResponse {
 }
 
 function useGenresData() {
-    return ApiService<GenreApiResponse>(`/genres`);
+
+    // ApiService<GenreApiResponse>(`/genres`)
+
+
+    // const {  data } = ApiService<GenreApiResponse>(`/genres`)
+
+    return useQuery<GenreApiResponse>({
+        queryKey: ['Genres'],
+        queryFn: () => ApiClient.get<GenreApiResponse>('/genres'),
+        staleTime: 10 * 1000
+
+    })
 
 }
 

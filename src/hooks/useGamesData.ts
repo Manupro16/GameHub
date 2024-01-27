@@ -2,41 +2,45 @@
  * useGamesData Hook
  *
  * Purpose:
- * Fetches and provides game data from the RAWG Video Games Database API.
- * This hook abstracts the API call logic and provides a clean interface to access game data.
+ * Fetches and manages game data from the RAWG Video Games Database API using React Query.
+ * This hook abstracts the API call logic, leveraging React Query for efficient data fetching, caching, and synchronization.
  *
  * Usage:
- * This hook can be used in any component that requires a list of games and their details.
- * It is primarily used in the GamesList component to render a list of game cards.
+ * Ideal for components requiring a list of games and their detailed information, such as game listings or search results.
+ * It provides easy access to game data, including pagination support through the RAWG API's response structure.
  *
  * Data Model:
- * The hook leverages the Game interface, which includes details like id, name, release date,
- * background image, metacritic score, platforms, and genres.
+ * Utilizes the Game interface to type the response from the API, including details like id, name, release date,
+ * background image, metacritic score, platforms, and genres for comprehensive game information.
  *
  * API Response Structure:
- * - count: Total number of games available.
- * - next: URL for the next page of results.
- * - previous: URL for the previous page of results.
- * - results: Array of game objects.
+ * - count: Total number of games matching the query.
+ * - next: URL for the next page of results, facilitating pagination.
+ * - previous: URL for the previous page of results, facilitating pagination.
+ * - results: Array of game objects, each containing detailed game information.
  *
  * Return Value:
- * This hook returns an object containing the game data (or null if not loaded),
- * a loading state, and an error state (if any error occurs during the API call).
+ * The hook leverages React Query's useQuery to return a query object with the following properties:
+ * - data: The fetched games data, or undefined if not yet loaded.
+ * - error: An error object if an error occurred during the fetch.
+ * - isLoading: A boolean indicating if the request is in progress.
+ * - isError: A boolean indicating if the request resulted in an error.
  *
  * Error Handling:
- * Any errors encountered during the API call are caught and returned as part of the hook's return value.
+ * Managed by React Query, with errors accessible through the error and isError properties, providing a robust way to handle API call failures.
  *
  * Dependencies:
- * Relies on the ApiService custom hook for performing API requests.
+ * Uses the ApiClient class for making API requests, ensuring a consistent and centralized way to manage API interactions.
  *
  * Example:
- * const { data, loading, error } = useGamesData();
- * if (loading) return <LoadingIndicator />;
- * if (error) return <ErrorDisplay message={error} />;
- * return <GamesList games={data.results} />;
+ * const { data, isLoading, error } = useGamesData();
+ * if (isLoading) return <LoadingIndicator />;
+ * if (error) return <ErrorDisplay message={error.message} />;
+ * return <GamesList games={data?.results} />;
  */
 
-import ApiService from '../services/api-service';
+import ApiClient from '../services/api-client';
+import { useQuery } from '@tanstack/react-query';
 
 
 export interface PlatformDetail {
@@ -73,7 +77,17 @@ interface GamesApiResponse {
 }
 
 function useGamesData() {
-    return ApiService<GamesApiResponse>(`/games`);
+
+    return useQuery<GamesApiResponse>({
+        queryKey: ['Games'],
+        queryFn: () => ApiClient.get<GamesApiResponse>("/games", {
+            params: {
+                page_size: 40
+            }
+        }),
+        staleTime: 10 * 1000
+
+    })
 }
 
 export default useGamesData;
