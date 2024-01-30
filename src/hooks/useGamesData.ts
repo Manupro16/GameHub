@@ -69,7 +69,7 @@ export interface Game {
 
 }
 
-interface GamesApiResponse {
+export interface GamesApiResponse {
     count: number;
     next: string | null;
     previous: string | null;
@@ -80,14 +80,16 @@ function useGamesData() {
 
     return useQuery<GamesApiResponse>({
         queryKey: ['Games'],
-        queryFn: () => ApiClient.get<GamesApiResponse>("/games", {
+        queryFn:  () => ApiClient.get<GamesApiResponse>("/games", {
             params: {
                 page_size: 40
             }
         }),
-        staleTime: 10 * 1000
+        staleTime: 7200000, // Data is considered fresh for 2 hours,
+        refetchOnWindowFocus: true,
+        refetchInterval: 7200000, // Data will be refetched every 2 hours
 
-    })
+    });
 }
 
 export default useGamesData;

@@ -1,29 +1,55 @@
 /**
- * GamesList Component
+ * GamesList Component Documentation
  *
- * This component is responsible for displaying a list of games based on various filters such as genre, platform, sorting option, and search query.
- * It fetches game data using the `useGamesData` hook and applies filters to display relevant games.
+ * Overview:
+ * The GamesList component is responsible for displaying a list of video games.
+ * It utilizes the `useGamesData` hook to fetch the list of games from the RAWG Video Games Database API
+ * and the `useCachedSortingFiltering` hook to apply user-selected filters and sorting options to the list.
+ * The component supports filtering by genre, platform, and search query, as well as sorting by newest, oldest,
+ * highest score, and lowest score.
+ *
+ * Features:
+ * - Dynamic fetching of games data based on user interactions.
+ * - Caching of game data to optimize network usage and enhance user experience.
+ * - Filtering and sorting of games based on various criteria.
+ * - Display of a loading indicator during data fetching and an error message for any errors encountered.
+ * - Responsive design that adjusts the layout and presentation of games based on screen size.
  *
  * Props:
- *  - selectedGenre: string | null - The genre selected by the user. Null if no genre is selected.
- *  - selectedPlatform: string - The platform selected by the user.
- *  - sortOption: string - The sorting option chosen by the user (e.g., 'Newest', 'Oldest').
- *  - searchQuery: string - The search query entered by the user.
+ * - selectedGenre: A string representing the user-selected genre to filter games by.
+ * - selectedPlatform: A string representing the user-selected platform to filter games by.
+ * - sortOption: A string representing the user-selected sorting option for ordering games.
+ * - searchQuery: A string representing the user's search query to filter games by name.
  *
- * The component uses Chakra UI for layout and styling. It also uses a custom `SkeletonGameCard` component to display a loading state.
+ * Usage:
+ * This component is used within the main application UI to present the list of games to the user.
+ * It interacts with user inputs provided through the NavBar and Dropdown components to dynamically
+ * update the list based on the selected filters and sorting options.
  *
- * The component's main logic involves filtering and sorting the games data based on the props provided. This is done inside a useEffect hook,
- * which re-runs whenever the props change, ensuring that the displayed games are always up to date with the user's selections.
+ * Example:
+ * ```
+ * <GamesList
+ *   selectedGenre="Action"
+ *   selectedPlatform="PC"
+ *   sortOption="Newest"
+ *   searchQuery="witcher"
+ * />
+ * ```
  *
- * In case of an error during data fetching, an error message is displayed. If no games match the filters, a message indicating so is shown.
+ * Note:
+ * The GamesList component is a key part of the application's interactive features, providing users
+ * with a flexible and responsive interface for exploring the video games database.
  */
+
 
 
 import {Text, Box, Flex, useBreakpointValue} from '@chakra-ui/react';
 import GamesCard from "./GameCard.tsx";
-import useGamesData, { Game } from "../hooks/useGamesData";
 import SkeletonGameCard from './SkeletonGameCard';
-import { useEffect, useState } from 'react';
+import useCachedSortingFiltering from "../hooks/useCachedSortingFiltering.ts";
+import useGamesData from "../hooks/useGamesData.ts";
+
+
 
 
 interface GamesListProps {
@@ -36,39 +62,11 @@ interface GamesListProps {
 
 function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }: GamesListProps) {
     const paddingValue = useBreakpointValue({ base: 4, sm: 6, md: 8 });
-    const { data, error, isLoading } = useGamesData();
-    const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
-    function matchesFilters(game: Game) {
-        const matchesGenre = !selectedGenre || game.genres.some(genre => genre.name === selectedGenre);
-        const matchesPlatform = !selectedPlatform || game.platforms.some(platform => platform.platform.name.includes(selectedPlatform));
-        const matchesSearch = !searchQuery || game.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const { data: gamesApiResponse, isLoading, error } = useGamesData();
+    const gamesData = gamesApiResponse?.results ?? [];
+    const  filteredGames  = useCachedSortingFiltering({ gamesData, selectedGenre, selectedPlatform, sortOption, searchQuery});
 
-        return matchesGenre && matchesPlatform && matchesSearch;
-    }
-
-    useEffect(() => {
-        if (data?.results) {
-            let newFilteredGames = data.results.filter(matchesFilters);
-
-            switch (sortOption) {
-                case 'Newest':
-                    newFilteredGames.sort((a, b) => new Date(b.released ?? '').getTime() - new Date(a.released ?? '').getTime());
-                    break;
-                case 'Oldest':
-                    newFilteredGames.sort((a, b) => new Date(a.released ?? '').getTime() - new Date(b.released ?? '').getTime());
-                    break;
-                case 'Highest Score':
-                    newFilteredGames.sort((a, b) => (b.metacritic ?? 0) - (a.metacritic ?? 0));
-                    break;
-                case 'Lowest Score':
-                    newFilteredGames.sort((a, b) => (a.metacritic ?? 0) - (b.metacritic ?? 0));
-                    break;
-            }
-
-            setFilteredGames(newFilteredGames);
-        }
-    }, [data, selectedGenre, selectedPlatform, sortOption, searchQuery]);
 
     return (
         <Box as="section" paddingLeft={paddingValue}>

@@ -68,15 +68,13 @@ interface GenreApiResponse {
 
 function useGenresData() {
 
-    // ApiService<GenreApiResponse>(`/genres`)
-
-
-    // const {  data } = ApiService<GenreApiResponse>(`/genres`)
-
     return useQuery<GenreApiResponse>({
         queryKey: ['Genres'],
         queryFn: () => ApiClient.get<GenreApiResponse>('/genres'),
-        staleTime: 10 * 1000
+        staleTime: 7200000, // Data is considered fresh for 2 hours
+        refetchOnWindowFocus: true,
+        refetchInterval: 7200000, // Data will be refetched every 2 hours
+
 
     })
 
