@@ -21,14 +21,33 @@
  * This component does not take any props and is static in nature. It should be replaced with actual game card components
  * once the data is loaded.
  */
-import { Box, Skeleton, SkeletonText } from '@chakra-ui/react';
+import {  Card, CardBody, AspectRatio, Stack, Divider, Flex, Tag, Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
+
 
 function SkeletonGameCard() {
     return (
-        <Box padding="6" boxShadow="lg" bg="white" borderRadius="md">
-            <Skeleton height="200px" />
-            <SkeletonText mt="4" noOfLines={4} spacing="4" />
-        </Box>
+        <Card maxW="300px" marginTop={10} w="full" h="350px" overflow='hidden' borderRadius="lg" boxShadow="md">
+            <CardBody padding={0}>
+                <AspectRatio ratio={16 / 9} width='100%'>
+                    <Skeleton height="100%" />
+                </AspectRatio>
+                <Stack p={4} overflow="hidden">
+                    <Divider />
+                    <Flex justifyContent="space-between" alignItems="center" gap={5}>
+                        <SkeletonText mt="4" noOfLines={1} width="70%" />
+                        <Tag>
+                            <SkeletonCircle size="8" />
+                        </Tag>
+                    </Flex>
+                    <SkeletonText mt="4" noOfLines={2} />
+                    <Flex alignItems='center' gap={2}>
+                        <SkeletonCircle size="10" />
+                        <SkeletonCircle size="10" />
+                        <SkeletonCircle size="10" />
+                    </Flex>
+                </Stack>
+            </CardBody>
+        </Card>
     );
 }
 

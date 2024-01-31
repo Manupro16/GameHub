@@ -75,7 +75,7 @@ function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }:
             </Text>
             <Flex wrap="wrap" justify="space-around" gap={6}>
                 {isLoading ? (
-                    Array(10).fill(null).map((_, index) => <SkeletonGameCard key={index} />)
+                    Array(20).fill(null).map((_, index) => <SkeletonGameCard key={index} />)
                 ) : error ? (
                     <Text fontSize="lg" color="gray.500" marginTop={10}>
                         Error on request: {error?.message}
