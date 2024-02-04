@@ -2,45 +2,61 @@
  * useGamesData Hook
  *
  * Purpose:
- * Fetches and manages game data from the RAWG Video Games Database API using React Query.
- * This hook abstracts the API call logic, leveraging React Query for efficient data fetching, caching, and synchronization.
+ * Fetches and manages the pagination of game data from the RAWG Video Games Database API.
+ * It uses React Query's `useInfiniteQuery` for efficient data fetching, caching, infinite scrolling, and synchronization.
+ *
+ * Features:
+ * - Efficient data fetching and state management for game listings.
+ * - Supports infinite scrolling through pagination.
+ * - Caching and background updating for a better user experience.
+ * - Integrated error handling and loading state management.
  *
  * Usage:
- * Ideal for components requiring a list of games and their detailed information, such as game listings or search results.
- * It provides easy access to game data, including pagination support through the RAWG API's response structure.
- *
- * Data Model:
- * Utilizes the Game interface to type the response from the API, including details like id, name, release date,
- * background image, metacritic score, platforms, and genres for comprehensive game information.
- *
- * API Response Structure:
- * - count: Total number of games matching the query.
- * - next: URL for the next page of results, facilitating pagination.
- * - previous: URL for the previous page of results, facilitating pagination.
- * - results: Array of game objects, each containing detailed game information.
- *
- * Return Value:
- * The hook leverages React Query's useQuery to return a query object with the following properties:
- * - data: The fetched games data, or undefined if not yet loaded.
- * - error: An error object if an error occurred during the fetch.
- * - isLoading: A boolean indicating if the request is in progress.
- * - isError: A boolean indicating if the request resulted in an error.
- *
- * Error Handling:
- * Managed by React Query, with errors accessible through the error and isError properties, providing a robust way to handle API call failures.
- *
- * Dependencies:
- * Uses the ApiClient class for making API requests, ensuring a consistent and centralized way to manage API interactions.
+ * Ideal for building components that require a list of games with the ability to load more on demand, such as infinite scrolling lists.
  *
  * Example:
- * const { data, isLoading, error } = useGamesData();
- * if (isLoading) return <LoadingIndicator />;
- * if (error) return <ErrorDisplay message={error.message} />;
- * return <GamesList games={data?.results} />;
+ * ```tsx
+ * const { data, error, fetchNextPage, hasNextPage, isLoading } = useGamesData();
+ * if (isLoading) return <div>Loading...</div>;
+ * if (error) return <div>An error occurred: {error.message}</div>;
+ * return (
+ *   <div>
+ *     {data.pages.map((page, i) => (
+ *       <React.Fragment key={i}>
+ *         {page.results.map(game => <GameComponent key={game.id} game={game} />)}
+ *       </React.Fragment>
+ *     ))}
+ *     {hasNextPage && <button onClick={() => fetchNextPage()}>Load More</button>}
+ *   </div>
+ * );
+ * ```
+ *
+ * Data Model:
+ * The hook structures game data using the `Game` interface, which includes comprehensive details necessary for displaying game listings.
+ *
+ * Return Value:
+ * The hook returns an object with properties to manage the fetched data and query state, including:
+ * - `data`: An object with pages of games data, each containing a list of games.
+ * - `error`: An error object if an error occurred during fetching.
+ * - `isLoading`: Boolean indicating if the initial query is in progress.
+ * - `fetchNextPage`: Function to load the next page of data.
+ * - `hasNextPage`: Boolean indicating if there are more pages to load.
+ *
+ * Pagination Handling:
+ * Pagination is managed automatically by React Query based on the `getNextPageParam` function, which extracts the next page number from the API response.
+ *
+ * Refetching Strategy:
+ * By default, data is refetched in the background when the window regains focus to ensure data freshness without manual refresh.
+ *
+ * Error Handling:
+ * Errors during data fetching are managed by React Query and made accessible via the `error` and `isError` properties for easy integration into UI error handling logic.
+ *
+ * Dependencies:
+ * Relies on the `ApiClient` class for making API requests, abstracting away direct API call mechanics and centralizing configuration.
  */
 
 import ApiClient from '../services/api-client';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 
 export interface PlatformDetail {
@@ -78,17 +94,28 @@ export interface GamesApiResponse {
 
 function useGamesData() {
 
-    return useQuery<GamesApiResponse>({
-        queryKey: ['Games'],
-        queryFn:  () => ApiClient.get<GamesApiResponse>("/games", {
-            params: {
-                page_size: 40
-            }
-        }),
-        staleTime: 7200000, // Data is considered fresh for 2 hours,
-        refetchOnWindowFocus: true,
-        refetchInterval: 7200000, // Data will be refetched every 2 hours
+    function fetchGamesData(pageParam: number): Promise<GamesApiResponse> {
 
+        return ApiClient.get<GamesApiResponse>('/games', {
+            params: {
+                page: pageParam,
+                page_size: 20,
+            },
+        });
+    }
+
+
+    return useInfiniteQuery<GamesApiResponse, Error>({
+        queryKey: ['Games'],
+        queryFn: ({ pageParam = 1 }) => fetchGamesData(pageParam as number),
+        getNextPageParam: (lastPage) => {
+            if (!lastPage.next) return undefined;
+            const url = new URL(lastPage.next);
+            const nextPage = url.searchParams.get('page');
+            return nextPage ? parseInt(nextPage, 10) : undefined
+        },
+        initialPageParam: 1, // Data will be refetched every 2 hours
+        refetchOnWindowFocus: false,
     });
 }
 

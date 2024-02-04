@@ -72,7 +72,6 @@ function useGenresData() {
         queryKey: ['Genres'],
         queryFn: () => ApiClient.get<GenreApiResponse>('/genres'),
         staleTime: 7200000, // Data is considered fresh for 2 hours
-        refetchOnWindowFocus: true,
         refetchInterval: 7200000, // Data will be refetched every 2 hours
 
 

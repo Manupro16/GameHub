@@ -1,49 +1,33 @@
 /**
- * GamesList Component Documentation
+ * GamesList Component
  *
- * Overview:
- * The GamesList component is responsible for displaying a list of video games.
- * It utilizes the `useGamesData` hook to fetch the list of games from the RAWG Video Games Database API
- * and the `useCachedSortingFiltering` hook to apply user-selected filters and sorting options to the list.
- * The component supports filtering by genre, platform, and search query, as well as sorting by newest, oldest,
- * highest score, and lowest score.
- *
- * Features:
- * - Dynamic fetching of games data based on user interactions.
- * - Caching of game data to optimize network usage and enhance user experience.
- * - Filtering and sorting of games based on various criteria.
- * - Display of a loading indicator during data fetching and an error message for any errors encountered.
- * - Responsive design that adjusts the layout and presentation of games based on screen size.
+ * This component displays a list of video games based on the selected genre, platform, sort option, and search query.
+ * It utilizes the `useGamesData` hook to fetch the list of games from an API and the `useCachedSortingFiltering` hook
+ * to apply client-side filtering and sorting based on the user's selections. The component is designed to be responsive,
+ * adjusting its layout based on the current breakpoint. Additionally, it provides a "Load More" button to fetch additional
+ * games if available.
  *
  * Props:
- * - selectedGenre: A string representing the user-selected genre to filter games by.
- * - selectedPlatform: A string representing the user-selected platform to filter games by.
- * - sortOption: A string representing the user-selected sorting option for ordering games.
- * - searchQuery: A string representing the user's search query to filter games by name.
+ * - selectedGenre: The genre selected by the user for filtering the games list.
+ * - selectedPlatform: The platform selected by the user for filtering the games list.
+ * - sortOption: The option selected by the user for sorting the games list.
+ * - searchQuery: The query entered by the user for searching within the games list.
  *
  * Usage:
- * This component is used within the main application UI to present the list of games to the user.
- * It interacts with user inputs provided through the NavBar and Dropdown components to dynamically
- * update the list based on the selected filters and sorting options.
- *
- * Example:
- * ```
  * <GamesList
  *   selectedGenre="Action"
  *   selectedPlatform="PC"
  *   sortOption="Newest"
- *   searchQuery="witcher"
+ *   searchQuery=""
  * />
- * ```
  *
- * Note:
- * The GamesList component is a key part of the application's interactive features, providing users
- * with a flexible and responsive interface for exploring the video games database.
+ * The component structure includes a header displaying the current category, a flex container for the game cards,
+ * and conditionally rendered content based on the loading state, presence of an error, or the filtered games list.
  */
 
 
 
-import {Text, Box, Flex, useBreakpointValue} from '@chakra-ui/react';
+import { Text, Box, Flex, useBreakpointValue, Button} from '@chakra-ui/react';
 import GamesCard from "./GameCard.tsx";
 import SkeletonGameCard from './SkeletonGameCard';
 import useCachedSortingFiltering from "../hooks/useCachedSortingFiltering.ts";
@@ -63,8 +47,8 @@ interface GamesListProps {
 function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }: GamesListProps) {
     const paddingValue = useBreakpointValue({ base: 4, sm: 6, md: 8 });
 
-    const { data: gamesApiResponse, isLoading, error } = useGamesData();
-    const gamesData = gamesApiResponse?.results ?? [];
+    const { data, isLoading, error, fetchNextPage, hasNextPage } = useGamesData();
+    const gamesData = data?.pages.flatMap(page => page.results) ?? [];
     const  filteredGames  = useCachedSortingFiltering({ gamesData, selectedGenre, selectedPlatform, sortOption, searchQuery});
 
 
@@ -96,6 +80,13 @@ function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }:
                     </Text>
                 )}
             </Flex>
+            {hasNextPage && (
+                <Flex justifyContent='center' marginTop='4'>
+                    <Button onClick={() => fetchNextPage()} isLoading={isLoading}>
+                        Load More
+                    </Button>
+                </Flex>
+            )}
         </Box>
     );
 }
