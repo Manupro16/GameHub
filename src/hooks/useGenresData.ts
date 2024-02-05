@@ -44,6 +44,7 @@
 
 import ApiClient from '../services/api-client';
 import { useQuery } from '@tanstack/react-query';
+import ms from 'ms';
 
 interface Game {
     id: number;
@@ -72,7 +73,7 @@ function useGenresData() {
         queryKey: ['Genres'],
         queryFn: () => ApiClient.get<GenreApiResponse>('/genres'),
         staleTime: 7200000, // Data is considered fresh for 2 hours
-        refetchInterval: 7200000, // Data will be refetched every 2 hours
+        refetchInterval: ms('2 hours'),
 
 
     })
