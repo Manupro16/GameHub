@@ -42,7 +42,7 @@
  * return <GenresList genres={data?.results} />;
  */
 
-import ApiClient from '../services/api-client';
+import ApiClient from '../../API/api-client.ts';
 import { useQuery } from '@tanstack/react-query';
 import ms from 'ms';
 

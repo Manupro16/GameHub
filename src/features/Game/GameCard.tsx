@@ -27,7 +27,7 @@ import {
 
 import { FaWindows, FaPlaystation, FaXbox, FaApple, FaAndroid, FaLinux } from 'react-icons/fa';
 
-import { Platform, PlatformDetail } from "../hooks/useGamesData.ts"
+import { Platform, PlatformDetail } from "./useGamesData.ts"
 import {IconType} from "react-icons";
 
 

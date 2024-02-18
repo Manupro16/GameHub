@@ -18,9 +18,9 @@
  * The component uses semantic HTML and responsive styles to enhance accessibility and ensure a consistent look across different screen sizes.
  */
 import {Text, List, Box} from '@chakra-ui/react';
-import GenreCategory from "./GenreCategory";
-import useGenresData from "../hooks/useGenresData";
-import SkeletonGenreCategory from "./SkeletonGenreCategory";
+import GenreCategory from "./GenreCategory.tsx";
+import useGenresData from "./useGenresData.ts";
+import SkeletonGenreCategory from "../Shared/SkeletonGenreCategory.tsx";
 
 interface GenresListProps {
     onGenreSelect: (genre: string) => void;

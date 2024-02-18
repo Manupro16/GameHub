@@ -44,7 +44,7 @@
  */
 
 import {useMemo} from 'react';
-import {Game} from './useGamesData';
+import {Game} from './useGamesData.ts';
 
 interface UseCachedSortingFilteringProps {
     gamesData: Game[];

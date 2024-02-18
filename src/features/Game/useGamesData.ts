@@ -55,7 +55,7 @@
  * Relies on the `ApiClient` class for making API requests, abstracting away direct API call mechanics and centralizing configuration.
  */
 
-import ApiClient from '../services/api-client';
+import ApiClient from '../../API/api-client.ts';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import ms from 'ms';
 

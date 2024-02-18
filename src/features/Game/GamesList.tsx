@@ -50,9 +50,9 @@
 
 import { Text, Box, Flex, useBreakpointValue} from '@chakra-ui/react';
 import GamesCard from "./GameCard.tsx";
-import SkeletonGameCard from './SkeletonGameCard';
-import useCachedSortingFiltering from "../hooks/useCachedSortingFiltering.ts";
-import useGamesData from "../hooks/useGamesData.ts";
+import SkeletonGameCard from '../Shared/SkeletonGameCard.tsx';
+import useCachedSortingFiltering from "./useCachedSortingFiltering.ts";
+import useGamesData from "./useGamesData.ts";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 

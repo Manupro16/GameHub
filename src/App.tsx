@@ -29,12 +29,14 @@
  */
 
 
-import {Box, Grid, useBreakpointValue} from '@chakra-ui/react';
-import NavBar from "./Components/NavBar.tsx";
-import GenresList from "./Components/GenresList.tsx";
-import GamesList from "./Components/GamesList.tsx";
+import {Box, Grid } from '@chakra-ui/react';
+import NavBar from "./features/Shared/NavBar.tsx";
+import GenresList from "./features/Genre/GenresList.tsx";
+import GamesList from "./features/Game/GamesList.tsx";
 import  { useState } from 'react';
-import Dropdowns from "./Components/Dropdowns.tsx";
+import Dropdowns from "./features/Shared/Dropdowns.tsx";
+import {useBreakpointValue} from "@chakra-ui/react";
+
 
 function App() {
 
@@ -55,12 +57,14 @@ function App() {
         setSortOption(sortOption);
     }
 
-    const templateColumns = useBreakpointValue({
+
+
+     const templateColumns = useBreakpointValue({
         base: "1fr", // Stacks the grid items on smaller screens
         md: "0.3fr 1.5fr", // Allocates more space to the games section on wider screens
     });
 
-    const gridTemplateAreas = useBreakpointValue({
+     const gridTemplateAreas = useBreakpointValue({
         base: `
             "dropdowns"
             "genres"
@@ -68,10 +72,11 @@ function App() {
         md: `"genres dropdowns" "genres games"`
     });
 
-    const gridTemplateRows = useBreakpointValue({
+     const gridTemplateRows = useBreakpointValue({
         base: "auto auto 1fr",
         md: "auto 1fr"
     });
+
 
   return (
       <>
