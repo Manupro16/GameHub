@@ -51,27 +51,43 @@
 import { Text, Box, Flex, useBreakpointValue} from '@chakra-ui/react';
 import GamesCard from "./GameCard.tsx";
 import SkeletonGameCard from '../Shared/SkeletonGameCard.tsx';
-import useCachedSortingFiltering from "./useCachedSortingFiltering.ts";
 import useGamesData from "./useGamesData.ts";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import  useGamesStore  from "./gamesStore";
+import React, { useEffect } from "react";
 
 
-
-
-interface GamesListProps {
-    selectedGenre: string | null;
-    selectedPlatform: string;
-    sortOption: string;
-    searchQuery: string;
+interface SkeletonArrayProps {
+    isLoading: boolean;
+    hasNextPage: boolean;
 }
 
 
-function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }: GamesListProps) {
+
+
+function GamesList() {
     const paddingValue = useBreakpointValue({ base: 4, sm: 6, md: 8 });
 
     const { data, isLoading, error, fetchNextPage, hasNextPage } = useGamesData();
-    const gamesData = data?.pages.flatMap(page => page.results) ?? [];
-    const  filteredGames  = useCachedSortingFiltering({ gamesData, selectedGenre, selectedPlatform, sortOption, searchQuery});
+    const { setGamesData, filteredSortedGames, selectedGenre, updateFilteredSortedGames } = useGamesStore()
+
+    useEffect(() => {
+        if (data) {
+            const gamesData = data?.pages.flatMap(page => page.results) ?? [];
+            setGamesData(gamesData);
+            updateFilteredSortedGames()
+        }
+    }, [data, setGamesData]);
+
+    const SkeletonArray:React.FC<SkeletonArrayProps> = ({ isLoading, hasNextPage }) => {
+        if (!isLoading || !hasNextPage) return null;
+
+        return (
+            <>
+                {Array(5).fill(null).map((_, index) => <SkeletonGameCard key={index} />)}
+            </>
+        );
+    };
 
 
     return (
@@ -80,24 +96,22 @@ function GamesList({ selectedGenre, selectedPlatform, sortOption, searchQuery }:
                 Games
             </Text>
             <InfiniteScroll
-                dataLength={filteredGames.length}
+                dataLength={filteredSortedGames.length}
                 next={fetchNextPage}
                 hasMore={hasNextPage}
-                loader={<SkeletonGameCard />}
+                loader={<SkeletonArray isLoading={isLoading} hasNextPage={hasNextPage} />}
                 endMessage={
                 <p style={{textAlign: 'center'}}>
                     <b>Yay! You have seen it all</b>
                 </p>
             }>
                 <Flex wrap="wrap" justify="space-around" gap={6}>
-                    {isLoading ? (
-                        Array(20).fill(null).map((_, index) => <SkeletonGameCard key={index} />)
-                    ) : error ? (
+                    { error ? (
                         <Text fontSize="lg" color="gray.500" marginTop={10}>
                             Error on request: {error?.message}
                         </Text>
-                    ) : filteredGames && filteredGames.length > 0 ? (
-                        filteredGames.map((game) => (
+                    ) : filteredSortedGames && filteredSortedGames.length > 0 ? (
+                        filteredSortedGames.map((game) => (
                             <GamesCard
                                 key={game.id}
                                 game_name={game.name}

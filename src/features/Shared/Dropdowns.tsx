@@ -19,20 +19,46 @@
  */
 
 import {Flex, Select, useBreakpointValue } from "@chakra-ui/react";
+import { useGamesStore } from "../Game";
 
-interface DropdownsProps {
-    onPlatformSelect: (platform: string) => void;
-    onSortSelect: (sortOption: string) => void;
+interface setPlatform {
+    type: "PLATFORM"
+    value: string
 }
 
-function Dropdowns({ onPlatformSelect, onSortSelect }: DropdownsProps) {
+interface setOrder {
+    type: "ORDER"
+    value: string
+}
 
+type MethodAction = setPlatform | setOrder
+
+
+function Dropdowns() {
+
+    const {setPlatform  , setSortOption, updateFilteredSortedGames} = useGamesStore()
     const selectWidth = useBreakpointValue({ base: "100%", sm: "200px", md: "250px" });
+
+
+    function updateMethod(action: MethodAction) {
+        switch (action.type) {
+            case "PLATFORM":
+                setPlatform(action.value)
+                break
+
+            case "ORDER":
+                setSortOption(action.value)
+                break
+        }
+
+        updateFilteredSortedGames()
+    }
+
 
 
     return (
         <Flex alignItems='center' gap={3} paddingTop={5}>
-            <Select placeholder='Platforms' width={selectWidth} onChange={(e) => onPlatformSelect(e.target.value)} >
+            <Select placeholder='Platforms' width={selectWidth} onChange={(e) => updateMethod({type: 'PLATFORM', value: e.target.value})} >
                 <option value='PC'>PC</option>
                 <option value='PlayStation'>PlayStation</option>
                 <option value='Xbox'>Xbox</option>
@@ -40,7 +66,7 @@ function Dropdowns({ onPlatformSelect, onSortSelect }: DropdownsProps) {
                 <option value='Android'>Android</option>
                 <option value='Linux'>Linux</option>
             </Select>
-            <Select placeholder='Order by:' width={selectWidth} onChange={(e) => onSortSelect(e.target.value)}>
+            <Select placeholder='Order by:' width={selectWidth} onChange={(e) => updateMethod({type: 'ORDER', value: e.target.value})}>
                 <option value='Newest'>Newest</option>
                 <option value='Oldest'>Oldest</option>
                 <option value='Highest Score'>Highest Score</option>

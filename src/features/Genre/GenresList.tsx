@@ -21,15 +21,18 @@ import {Text, List, Box} from '@chakra-ui/react';
 import GenreCategory from "./GenreCategory.tsx";
 import useGenresData from "./useGenresData.ts";
 import SkeletonGenreCategory from "../Shared/SkeletonGenreCategory.tsx";
+import { useGamesStore } from "../Game"
 
-interface GenresListProps {
-    onGenreSelect: (genre: string) => void;
-}
 
-function GenresList({ onGenreSelect }: GenresListProps) {
+function GenresList() {
 
     const { data, error, isLoading } = useGenresData();
+    const { setGenre, updateFilteredSortedGames } = useGamesStore()
 
+    function handleGenreSelect(genre: string) {
+        setGenre(genre);
+        updateFilteredSortedGames();
+    }
 
     return (
         <Box as='section' padding={[2, 4, 6]}>
@@ -40,7 +43,7 @@ function GenresList({ onGenreSelect }: GenresListProps) {
                 ) : error ? (
                     <Text>{error.message}</Text>
                 ) : data && data.results.map((genre) => (
-                    <GenreCategory key={genre.id} img_url={genre.image_background} type={genre.name} onGenreClick={() => onGenreSelect(genre.name)} />
+                    <GenreCategory key={genre.id} img_url={genre.image_background} type={genre.name} onGenreClick={() => handleGenreSelect(genre.name)} />
                 ))}
             </List>
         </Box>

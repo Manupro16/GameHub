@@ -33,31 +33,11 @@ import {Box, Grid } from '@chakra-ui/react';
 import NavBar from "./features/Shared/NavBar.tsx";
 import GenresList from "./features/Genre/GenresList.tsx";
 import GamesList from "./features/Game/GamesList.tsx";
-import  { useState } from 'react';
 import Dropdowns from "./features/Shared/Dropdowns.tsx";
 import {useBreakpointValue} from "@chakra-ui/react";
 
 
 function App() {
-
-    const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-    const [selectedPlatform, setSelectedPlatform] = useState<string>('');
-    const [sortOption, setSortOption] = useState<string>('');
-    const [searchQuery, setSearchQuery] = useState("");
-
-    function handleGenreSelect(genre: string ) {
-        setSelectedGenre(genre);
-    }
-
-    function handlePlatformSelect(platform: string) {
-        setSelectedPlatform(platform);
-    }
-
-    function handleSortSelect(sortOption: string) {
-        setSortOption(sortOption);
-    }
-
-
 
      const templateColumns = useBreakpointValue({
         base: "1fr", // Stacks the grid items on smaller screens
@@ -80,16 +60,16 @@ function App() {
 
   return (
       <>
-        <NavBar onSearch={setSearchQuery} />
+        <NavBar />
         <Grid gridTemplateAreas={gridTemplateAreas} templateRows={gridTemplateRows} templateColumns={templateColumns} gap={6} padding={6}>
             <Box gridArea='dropdowns'>
-                <Dropdowns onPlatformSelect={handlePlatformSelect} onSortSelect={handleSortSelect} />
+                <Dropdowns />
             </Box>
             <Box gridArea='genres'>
-                <GenresList onGenreSelect={handleGenreSelect} />
+                <GenresList />
             </Box>
             <Box gridArea='games'>
-                <GamesList selectedGenre={selectedGenre} selectedPlatform={selectedPlatform} sortOption={sortOption}  searchQuery={searchQuery} />
+                <GamesList />
             </Box>
 
         </Grid>

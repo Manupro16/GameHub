@@ -42,8 +42,6 @@ function SkeletonGameCard() {
                     <SkeletonText mt="4" noOfLines={2} />
                     <Flex alignItems='center' gap={2}>
                         <SkeletonCircle size="10" />
-                        <SkeletonCircle size="10" />
-                        <SkeletonCircle size="10" />
                     </Flex>
                 </Stack>
             </CardBody>

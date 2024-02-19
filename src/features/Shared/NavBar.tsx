@@ -33,23 +33,21 @@ import {
     useBreakpointValue
 } from '@chakra-ui/react';
 import { SearchIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
-import React, { useState } from "react";
-
-interface NavBarProps {
-    onSearch: (query: string) => void;
-}
+import React from "react";
+import { useGamesStore } from "../Game";
 
 
-function NavBar({ onSearch }: NavBarProps) {
+
+
+function NavBar() {
     const { colorMode, toggleColorMode } = useColorMode();
     const templateColumns = useBreakpointValue({ base: "1fr", md: "auto 1fr auto" });
-    const [searchQuery, setSearchQuery] = useState("");
+    const { setSearchQuery, searchQuery, updateFilteredSortedGames } = useGamesStore()
 
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("clicked" + event.target.value);
         setSearchQuery(event.target.value);
-        onSearch(event.target.value); // Call the callback passed from App
+        updateFilteredSortedGames()
     };
 
     return (
