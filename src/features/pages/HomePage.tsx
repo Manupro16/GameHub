@@ -30,14 +30,13 @@
 
 
 import {Box, Grid } from '@chakra-ui/react';
-import NavBar from "./features/Shared/NavBar.tsx";
-import GenresList from "./features/Genre/GenresList.tsx";
-import GamesList from "./features/Game/GamesList.tsx";
-import Dropdowns from "./features/Shared/Dropdowns.tsx";
+import GenresList from "../Genre/GenresList.tsx";
+import GamesList from "../Game/GamesList.tsx";
+import Dropdowns from "../Shared/Dropdowns.tsx";
 import {useBreakpointValue} from "@chakra-ui/react";
 
 
-function App() {
+function HomePage() {
 
      const templateColumns = useBreakpointValue({
         base: "1fr", // Stacks the grid items on smaller screens
@@ -59,8 +58,6 @@ function App() {
 
 
   return (
-      <>
-        <NavBar />
         <Grid gridTemplateAreas={gridTemplateAreas} templateRows={gridTemplateRows} templateColumns={templateColumns} gap={6} padding={6}>
             <Box gridArea='dropdowns'>
                 <Dropdowns />
@@ -71,10 +68,8 @@ function App() {
             <Box gridArea='games'>
                 <GamesList />
             </Box>
-
         </Grid>
-      </>
   );
 }
 
-export default App;
+export default HomePage;
