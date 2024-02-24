@@ -29,9 +29,12 @@ import { FaWindows, FaPlaystation, FaXbox, FaApple, FaAndroid, FaLinux } from 'r
 
 import { Platform, PlatformDetail } from "./useGamesData.ts"
 import {IconType} from "react-icons";
+import { useNavigate } from 'react-router-dom';
+import useGameStore, { GameStoreState } from '../pages/gameStore';
 
 
 interface Props {
+    id: number;
     img_url: string;
     game_name: string;
     score: number;
@@ -53,7 +56,11 @@ const platformIcons: PlatformIconMapping = {
 };
 
 
-function GameCard({ img_url, game_name, score, platform }: Props) {
+function GameCard({ img_url, game_name, score, platform, id }: Props) {
+
+    const navigate = useNavigate();
+    const setSelectedGameId = useGameStore((state: GameStoreState) => state.setSelectedGameId);
+
     const maxCardWidth = useBreakpointValue({ base: "90%", md: "300px" });
     const renderedPlatforms = new Set()
 
@@ -70,8 +77,28 @@ function GameCard({ img_url, game_name, score, platform }: Props) {
         }
     }
 
+    const hoverStyle = {
+        boxShadow: "2xl",
+        transform: "translateY(-8px) scale(1.02)",
+        transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, borderColor 0.3s ease-in-out",
+        borderColor: "blue.500", // Add a border color change on hover
+        borderWidth: "2px", // Specify the border width
+    };
+
+
+    function handleClick(gameTitle: string, gameId: number) {
+        const titleSlug = gameTitle
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/[^\w-]+/g, ''); // Remove all non-word chars
+
+        setSelectedGameId(gameId);
+        navigate(`/games/${titleSlug}`);
+    }
+
+
+
     return (
-        <Card maxW={maxCardWidth} marginTop={10} w="full" h="350px" overflow='hidden' borderRadius="lg" boxShadow="md">
+        <Card maxW={maxCardWidth} marginTop={10} w="full" h="350px" overflow='hidden' borderRadius="lg" boxShadow="md" _hover={hoverStyle} onClick={() => handleClick(game_name, id)}>
             <CardBody padding={0}>
                 <AspectRatio ratio={16 / 9} width='100%'>
                     <Image

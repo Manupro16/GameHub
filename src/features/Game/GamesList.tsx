@@ -114,6 +114,7 @@ function GamesList() {
                         filteredSortedGames.map((game) => (
                             <GamesCard
                                 key={game.id}
+                                id={game.id}
                                 game_name={game.name}
                                 img_url={game.background_image}
                                 score={game.metacritic}
